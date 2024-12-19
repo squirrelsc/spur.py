@@ -127,7 +127,12 @@ class SshShell(object):
             shell_type=None,
             look_for_private_keys=True,
             load_system_host_keys=True,
-            sock=None):
+            sock=None,
+            gss_auth=False,
+            gss_kex=False,
+            gss_deleg_creds=True,
+            gss_host=None,
+            gss_trust_dns=True):
 
         if connect_timeout is None:
             connect_timeout = _ONE_MINUTE
@@ -154,6 +159,12 @@ class SshShell(object):
             self._missing_host_key = MissingHostKey.raise_error
         else:
             self._missing_host_key = missing_host_key
+
+        self._gss_auth = gss_auth
+        self._gss_kex = gss_kex
+        self._gss_deleg_creds = gss_deleg_creds
+        self._gss_host = gss_host
+        self._gss_trust_dns = gss_trust_dns
 
         self._shell_type = shell_type
 
@@ -289,7 +300,12 @@ class SshShell(object):
                 key_filename=self._private_key_file,
                 look_for_keys=self._look_for_private_keys,
                 timeout=self._connect_timeout,
-                sock=self._sock
+                sock=self._sock,
+                gss_auth=self._gss_auth,
+                gss_kex=self._gss_kex,
+                gss_deleg_creds=self._gss_deleg_creds,
+                gss_host=self._gss_host,
+                gss_trust_dns=self._gss_trust_dns,
             )
             self._client = client
         return self._client
